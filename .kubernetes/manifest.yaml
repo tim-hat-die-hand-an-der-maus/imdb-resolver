@@ -30,3 +30,6 @@ spec:
         - name: imdb-resolver
           image: ghcr.io/tim-hat-die-hand-an-der-maus/imdb-resolver:{{tag}}
           imagePullPolicy: Always
+          ports:
+          - containerPort: 8000
+            protocol: TCP
