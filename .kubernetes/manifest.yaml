@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: imdb-resolver
+  namespace: timhatdiehandandermaus
 spec:
   selector:
     app: imdb-resolver
