@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: imdb-resolver
+spec:
+  selector:
+    app: imdb-resolver
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imdb-resolver
+  namespace: timhatdiehandandermaus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: imdb-resolver
+  template:
+    metadata:
+      labels:
+        app: imdb-resolver
+    spec:
+      containers:
+        - name: imdb-resolver
+          image: ghcr.io/tim-hat-die-hand-an-der-maus/imdb-resolver:{{tag}}
+          imagePullPolicy: Always
