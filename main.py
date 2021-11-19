@@ -14,9 +14,18 @@ class ResolverRequest(BaseModel):
 app = FastAPI()
 
 
+COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
+
+
 def remove_size_from_cover_url(url: str) -> str:
-    pattern = r"._V\d+_\w+\d+_\w+\d+,\d+,\d+,\d+_"
-    return re.sub(pattern, "", url)
+    return re.sub(COVER_URL_SIZE_REGEX, "", url)
+
+
+def get_ratio_from_cover_url(url: str) -> float:
+    if matches := re.findall(COVER_URL_SIZE_REGEX, url):
+        width, height = matches[0]
+
+        return int(height) / int(width)
 
 
 @app.post("/")
@@ -33,12 +42,17 @@ def movie_by_link(req: ResolverRequest):
     if not isinstance(movie, Movie):
         raise HTTPException(status_code=404, detail="Link couldn't be resolved to a movie")
     else:
-        cover_url = remove_size_from_cover_url(movie.data["cover url"])
+        cover_url = movie.data["cover url"]
+        cover_url = remove_size_from_cover_url(cover_url)
+        cover_ratio = get_ratio_from_cover_url(cover_url)
 
         return {
             "id": movie.movieID,
             "title": movie.data['title'],
             "year": movie.data['year'],
             "rating": movie.data['rating'],
-            "coverUrl": cover_url,
+            "cover": {
+                "url": cover_url,
+                "ratio": cover_ratio,
+            },
         }
