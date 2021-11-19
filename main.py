@@ -7,11 +7,16 @@ from pydantic import BaseModel
 import re
 
 
+class ResolverRequest(BaseModel):
+    imdbUrl: str
+
+
 app = FastAPI()
 
 
-class ResolverRequest(BaseModel):
-    imdbUrl: str
+def remove_size_from_cover_url(url: str) -> str:
+    pattern = r"._V\d+_\w+\d+_\w+\d+,\d+,\d+,\d+_"
+    return re.sub(pattern, "", url)
 
 
 @app.post("/")
@@ -28,10 +33,12 @@ def movie_by_link(req: ResolverRequest):
     if not isinstance(movie, Movie):
         raise HTTPException(status_code=404, detail="Link couldn't be resolved to a movie")
     else:
+        cover_url = remove_size_from_cover_url(movie.data["cover url"])
+
         return {
             "id": movie.movieID,
             "title": movie.data['title'],
             "year": movie.data['year'],
             "rating": movie.data['rating'],
-            "coverUrl": movie.data["cover url"],
+            "coverUrl": cover_url,
         }
