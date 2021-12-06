@@ -17,8 +17,6 @@ class SearchRequest(BaseModel):
 
 app = FastAPI()
 
-COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
-
 
 def remove_size_from_cover_url(url: str) -> str:
     pattern = r"._V\d+_\w+\d+_\w+\d+,\d+,\d+,\d+_"
