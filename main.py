@@ -27,7 +27,7 @@ def remove_size_from_cover_url(url: str) -> str:
 def search(req: SearchRequest):
     imdb = IMDb()
 
-    data = [{"title": movie.data['title'], "url": f"https://www.imdb.com/title/tt{movie.movieID}",
+    data = [{"title": movie.data['title'], "id": movie.movieID,
              "year": movie.data['year']} for movie in imdb.search_movie(req.title)]
     return {
         "results": data
