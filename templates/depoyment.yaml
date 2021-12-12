@@ -22,19 +22,11 @@ spec:
       - name: {{ .Values.deployment.name }}
         image: {{ .Values.deployment.image }}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
-        envFrom:
-          - secretRef:
-              name: {{ .Values.secret.name }}
-          - configMapRef:
-              name: {{ .Values.configmap.name }}
         ports:
         {{- range $port := .Values.deployment.ports }}
         - containerPort: {{ $port }}
           protocol: TCP
         {{- end }}
-        volumeMounts:
-          - mountPath: {{ .Values.volume.sqlite.path }}
-            name: {{ .Values.volume.sqlite.name }}
         resources:
           requests:
             cpu: {{ .Values.deployment.requests.cpu }}
