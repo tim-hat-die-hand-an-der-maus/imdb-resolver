@@ -1,5 +1,5 @@
 imdbpy==2021.4.18
 requests==2.27.1
-fastapi==0.74.0
+fastapi==0.74.1
 uvicorn==0.17.5
 pydantic==1.9.0
