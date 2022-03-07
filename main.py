@@ -39,6 +39,6 @@ def movie_by_link(req: ResolverRequest):
             "id": movie.movieID,
             "title": movie.data['title'],
             "year": movie.data['year'],
-            "rating": movie.data['rating'],
+            "rating": str(movie.data['rating']),
             "coverUrl": cover_url,
         }
