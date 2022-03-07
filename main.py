@@ -58,8 +58,8 @@ def movie_by_link(req: ResolverRequest):
         raise HTTPException(status_code=404, detail="Link couldn't be resolved to a movie")
     else:
         cover_url = movie.data["cover url"]
-        cover_url = remove_size_from_cover_url(cover_url)
         cover_ratio = get_ratio_from_cover_url(cover_url)
+        cover_url = remove_size_from_cover_url(cover_url)
 
         return {
             "id": movie.movieID,
