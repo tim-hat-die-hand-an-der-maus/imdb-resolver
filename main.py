@@ -1,14 +1,18 @@
+import re
+
 from fastapi import FastAPI, HTTPException
 from imdb import IMDb
 from imdb.Movie import Movie
 from imdb.helpers import get_byURL
 from pydantic import BaseModel
 
-import re
-
 
 class ResolverRequest(BaseModel):
     imdbUrl: str
+
+
+class SearchRequest(BaseModel):
+    title: str
 
 
 app = FastAPI()
@@ -17,6 +21,17 @@ app = FastAPI()
 def remove_size_from_cover_url(url: str) -> str:
     pattern = r"._V\d+_\w+\d+_\w+\d+,\d+,\d+,\d+_"
     return re.sub(pattern, "", url)
+
+
+@app.post("/search")
+def search(req: SearchRequest):
+    imdb = IMDb()
+
+    data = [{"title": movie.data['title'], "id": movie.movieID,
+             "year": movie.data['year']} for movie in imdb.search_movie(req.title)]
+    return {
+        "results": data
+    }
 
 
 @app.post("/")
