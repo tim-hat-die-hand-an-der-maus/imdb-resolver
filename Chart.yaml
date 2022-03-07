@@ -1,0 +1,7 @@
+apiVersion: v2
+name: imdb-resolver
+description: Deploy imdb-resovler (https://github.com/tim-hat-die-hand-an-der-maus/imdb-resolver)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+icon: https://carstens.tech/helm_icon.png

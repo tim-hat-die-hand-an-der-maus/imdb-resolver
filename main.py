@@ -1,14 +1,18 @@
+import re
+
 from fastapi import FastAPI, HTTPException
 from imdb import IMDb
 from imdb.Movie import Movie
 from imdb.helpers import get_byURL
 from pydantic import BaseModel
 
-import re
-
 
 class ResolverRequest(BaseModel):
     imdbUrl: str
+
+
+class SearchRequest(BaseModel):
+    title: str
 
 
 app = FastAPI()
@@ -26,6 +30,17 @@ def get_ratio_from_cover_url(url: str) -> float:
         width, height = matches[0]
 
         return int(height) / int(width)
+
+
+@app.post("/search")
+def search(req: SearchRequest):
+    imdb = IMDb()
+
+    data = [{"title": movie.data['title'], "id": movie.movieID,
+             "year": movie.data['year']} for movie in imdb.search_movie(req.title)]
+    return {
+        "results": data
+    }
 
 
 @app.post("/")
@@ -50,9 +65,10 @@ def movie_by_link(req: ResolverRequest):
             "id": movie.movieID,
             "title": movie.data['title'],
             "year": movie.data['year'],
-            "rating": movie.data['rating'],
+            "rating": str(movie.data['rating']),
             "cover": {
                 "url": cover_url,
                 "ratio": cover_ratio,
             },
+            "coverUrl": cover_url,
         }
