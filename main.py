@@ -37,7 +37,7 @@ def search(req: SearchRequest):
     imdb = IMDb()
 
     data = [{"title": movie.data['title'], "id": movie.movieID,
-             "year": movie.data['year']} for movie in imdb.search_movie(req.title)]
+             "year": movie.data.get('year')} for movie in imdb.search_movie(req.title)]
     return {
         "results": data
     }
