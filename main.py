@@ -1,4 +1,5 @@
 import re
+from typing import Dict
 
 from fastapi import FastAPI, HTTPException
 from imdb import IMDb
@@ -17,7 +18,6 @@ class SearchRequest(BaseModel):
 
 app = FastAPI()
 
-
 COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
 
 
@@ -32,14 +32,30 @@ def get_ratio_from_cover_url(url: str) -> float:
         return int(height) / int(width)
 
 
+def movie_to_json(movie) -> Dict:
+    cover_url = movie.data["cover url"]
+    cover_ratio = get_ratio_from_cover_url(cover_url)
+    cover_url = remove_size_from_cover_url(cover_url)
+
+    return {
+        "id": movie.movieID,
+        "title": movie.data['title'],
+        "year": movie.data.get('year'),
+        "rating": str(movie.data.get('rating')),
+        "cover": {
+            "url": cover_url,
+            "ratio": cover_ratio,
+        },
+        "coverUrl": cover_url,
+    }
+
+
 @app.post("/search")
 def search(req: SearchRequest):
     imdb = IMDb()
 
-    data = [{"title": movie.data['title'], "id": movie.movieID,
-             "year": movie.data['year']} for movie in imdb.search_movie(req.title)]
     return {
-        "results": data
+        "results": [movie_to_json(movie) for movie in imdb.search_movie(req.title)]
     }
 
 
@@ -57,18 +73,4 @@ def movie_by_link(req: ResolverRequest):
     if not isinstance(movie, Movie):
         raise HTTPException(status_code=404, detail="Link couldn't be resolved to a movie")
     else:
-        cover_url = movie.data["cover url"]
-        cover_ratio = get_ratio_from_cover_url(cover_url)
-        cover_url = remove_size_from_cover_url(cover_url)
-
-        return {
-            "id": movie.movieID,
-            "title": movie.data['title'],
-            "year": movie.data['year'],
-            "rating": str(movie.data['rating']),
-            "cover": {
-                "url": cover_url,
-                "ratio": cover_ratio,
-            },
-            "coverUrl": cover_url,
-        }
+        return movie_to_json(movie)
