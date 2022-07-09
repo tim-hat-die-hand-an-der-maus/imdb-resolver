@@ -22,7 +22,7 @@ def get_test_data():
     }
 
 
-def compare_reults_by_url(imdb_id: str, actual: Dict):
+def compare_results_by_url(imdb_id: str, actual: Dict) -> bool:
     expected: Dict = get_test_data()[imdb_id]["data"]
     comparable_keys = expected.keys() - IGNORE_FIELDS
 
@@ -30,7 +30,7 @@ def compare_reults_by_url(imdb_id: str, actual: Dict):
     for key in comparable_keys:
         result[key] = expected[key] == actual[key]
 
-    return result
+    return all(e[1] for e in result.items())
 
 
 def test_url():
@@ -42,4 +42,4 @@ def test_url():
         )
 
         assert response.status_code == get_test_data()[url].get("code", 200)
-        assert all(e[1] for e in compare_reults_by_url(url, response.json()).items())
+        assert compare_results_by_url(url, response.json())
