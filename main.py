@@ -2,7 +2,7 @@ import re
 from typing import Dict
 
 from fastapi import FastAPI, HTTPException
-from imdb import IMDb
+from imdb import Cinemagoer
 from imdb.Movie import Movie
 from imdb.helpers import get_byURL
 from pydantic import BaseModel
@@ -52,7 +52,7 @@ def movie_to_json(movie) -> Dict:
 
 @app.post("/search")
 def search(req: SearchRequest):
-    imdb = IMDb()
+    imdb = Cinemagoer()
 
     return {
         "results": [movie_to_json(movie) for movie in imdb.search_movie(req.title)]
@@ -68,9 +68,9 @@ def movie_by_link(req: ResolverRequest):
 
         if match:
             imdb_id = match.group(1)
-            movie = IMDb().get_movie(imdb_id)
+            movie = Cinemagoer().get_movie(imdb_id)
 
     if not isinstance(movie, Movie):
-        raise HTTPException(status_code=404, detail="Link couldn't be resolved to a movie")
+        raise HTTPException(status_code=404, detail=f"link (`{req.imdbUrl}`) couldn't be resolved to a movie")
     else:
         return movie_to_json(movie)
