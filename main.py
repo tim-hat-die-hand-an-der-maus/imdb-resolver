@@ -64,7 +64,7 @@ def movie_by_link(req: ResolverRequest):
     movie = get_byURL(req.imdbUrl)
 
     if not movie:
-        match = re.search(".*tt(\d+)", req.imdbUrl)
+        match = re.search(r".*tt(\d+)", req.imdbUrl)
 
         if match:
             imdb_id = match.group(1)
