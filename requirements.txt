@@ -1,5 +1,5 @@
 cinemagoer==2022.2.11
 requests==2.28.1
-fastapi==0.85.2
+fastapi==0.85.1
 uvicorn==0.19.0
 pydantic==1.10.2
