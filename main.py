@@ -78,9 +78,12 @@ def resolve_link(url: str) -> Optional[MovieResponse]:
 
         if match:
             imdb_id = match.group(1)
-            return Cinemagoer().get_movie(imdb_id)
+            movie = Cinemagoer().get_movie(imdb_id)
 
-    return None
+    if movie:
+        return MovieResponse.from_imdb_movie(movie)
+    else:
+        return None
 
 
 @app.post("/")
