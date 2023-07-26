@@ -2,4 +2,4 @@ cinemagoer==2023.5.1
 requests==2.31.0
 fastapi==0.100.0
 uvicorn==0.23.1
-pydantic==2.1.0
+pydantic==2.1.1
