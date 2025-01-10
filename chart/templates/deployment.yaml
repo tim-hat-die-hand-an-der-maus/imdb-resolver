@@ -31,6 +31,9 @@ spec:
             - containerPort: 8000
               name: http
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
