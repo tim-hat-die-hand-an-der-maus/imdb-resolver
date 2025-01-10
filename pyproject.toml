@@ -10,7 +10,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "cinemagoer ==2023.5.1",
+    "cinemagoer",
     "fastapi ==0.115.6",
     "pydantic ==2.10.5",
     "requests ==2.32.3",
@@ -24,6 +24,9 @@ dev = [
     "pytest >=8, <9",
     "ruff ==0.9.1",
 ]
+
+[tool.uv.sources]
+cinemagoer = { git = "https://github.com/cinemagoer/cinemagoer.git", rev = "3051a3a14bd1d0cffeca06854a2ab3602762badf" }
 
 [build-system]
 requires = ["hatchling"]
