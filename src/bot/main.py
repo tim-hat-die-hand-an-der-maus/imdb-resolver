@@ -63,8 +63,11 @@ class MovieResponse(BaseModel):
     coverUrl: str
 
     @classmethod
-    def from_imdb_movie(cls, movie: Movie) -> Self:
-        cover_url = movie.data["cover url"]
+    def from_imdb_movie(cls, movie: Movie) -> Self | None:
+        cover_url = movie.data.get("cover url")
+        if not cover_url:
+            _logger.warning("Ignoring movie with missing cover url")
+            return None
         cover_ratio = get_ratio_from_cover_url(cover_url)
         cover_url = remove_size_from_cover_url(cover_url)
 
@@ -86,12 +89,13 @@ app = FastAPI()
 def search(req: SearchRequest):
     imdb = Cinemagoer()
 
-    return {
-        "results": [
-            MovieResponse.from_imdb_movie(movie).model_dump()
-            for movie in imdb.search_movie(req.title)
-        ]
-    }
+    results = []
+    for movie in imdb.search_movie(req.title):
+        response = MovieResponse.from_imdb_movie(movie)
+        if response is not None:
+            results.append(response.model_dump())
+
+    return {"results": results}
 
 
 def resolve_link(url: str) -> MovieResponse | None:
