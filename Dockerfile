@@ -15,7 +15,7 @@ COPY [ "uv.lock", "pyproject.toml", "./" ]
 RUN uv sync --locked --no-install-workspace --all-extras --no-dev
 
 # We don't want the tests
-COPY src/bot ./src/bot
+COPY src/imdb_resolver ./src/imdb_resolver
 
 RUN uv sync --locked --no-editable --all-extras --no-dev
 
@@ -27,4 +27,4 @@ EXPOSE 8000
 ENV TZ=Europe/Berlin
 ENV UV_NO_SYNC=true
 ENTRYPOINT ["tini", "--", "uv", "run"]
-CMD ["uvicorn", "bot.main:app", "--host=0.0.0.0"]
+CMD ["uvicorn", "imdb_resolver.main:app", "--host=0.0.0.0"]

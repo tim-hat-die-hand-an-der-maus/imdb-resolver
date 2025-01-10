@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from bot.main import app
+from imdb_resolver.main import app
 
 client = TestClient(app)
 

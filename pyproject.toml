@@ -1,6 +1,6 @@
 [project]
 requires-python = "==3.11.*"
-name = "bot"
+name = "imdb-resolver"
 version = "1.0.0"
 description = ""
 authors = [{ name = "BlindfoldedSurgery", email = "team@blindfolded.surgery" }]
