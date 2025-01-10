@@ -1,10 +1,9 @@
 import re
-from typing import Optional
 
-from fastapi import HTTPException, FastAPI
+from fastapi import FastAPI, HTTPException
 from imdb import Cinemagoer
-from imdb.Movie import Movie
 from imdb.helpers import get_byURL
+from imdb.Movie import Movie
 from pydantic import BaseModel
 
 COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
@@ -19,6 +18,8 @@ def get_ratio_from_cover_url(url: str) -> float:
         width, height = matches[0]
 
         return int(height) / int(width)
+
+    raise ValueError("Could not determine ratio of cover")
 
 
 class ResolverRequest(BaseModel):
@@ -50,9 +51,9 @@ class MovieResponse(BaseModel):
 
         return cls(
             id=movie.movieID,
-            title=movie.data['title'],
-            year=movie.data.get('year'),
-            rating=str(movie.data.get('rating')),
+            title=movie.data["title"],
+            year=movie.data.get("year"),
+            rating=str(movie.data.get("rating")),
             cover=CoverMetadataResponse(url=cover_url, ratio=cover_ratio),
             coverUrl=cover_url,
         )
@@ -66,11 +67,14 @@ def search(req: SearchRequest):
     imdb = Cinemagoer()
 
     return {
-        "results": [MovieResponse.from_imdb_movie(movie).dict() for movie in imdb.search_movie(req.title)]
+        "results": [
+            MovieResponse.from_imdb_movie(movie).dict()
+            for movie in imdb.search_movie(req.title)
+        ]
     }
 
 
-def resolve_link(url: str) -> Optional[MovieResponse]:
+def resolve_link(url: str) -> MovieResponse | None:
     movie = get_byURL(url)
 
     if not movie:
@@ -91,6 +95,9 @@ def movie_by_link(req: ResolverRequest):
     movie = resolve_link(req.imdbUrl)
 
     if not movie:
-        raise HTTPException(status_code=404, detail=f"link (`{req.imdbUrl}`) couldn't be resolved to a movie")
+        raise HTTPException(
+            status_code=404,
+            detail=f"link (`{req.imdbUrl}`) couldn't be resolved to a movie",
+        )
     else:
         return movie

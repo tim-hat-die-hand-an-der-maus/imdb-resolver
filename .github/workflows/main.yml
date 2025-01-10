@@ -1,52 +1,63 @@
-name: Workflow
+name: Main
 on:
   push:
     branches: [ main ]
   pull_request: { }
 
 jobs:
-  validate-renovate-config:
-    uses: BlindfoldedSurgery/renovate-config/.github/workflows/validate.yml@main
+  required-meta:
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    uses: BlindfoldedSurgery/actions-meta/.github/workflows/required.yml@v1
 
   lint:
-    uses: BlindfoldedSurgery/actions-python/.github/workflows/lint.yml@v1
+    uses: BlindfoldedSurgery/actions-python/.github/workflows/lint.yml@v3
     with:
-      python-version: '3.12'
-      debian-version: bullseye
+      build-tool: uv
+      python-version: '3.11'
+
+  test:
+    uses: BlindfoldedSurgery/actions-python/.github/workflows/test.yml@v3
+    with:
+      build-tool: uv
+      python-version: '3.11'
 
   build-container-image:
     needs:
       - lint
-    uses: BlindfoldedSurgery/actions-container/.github/workflows/build-image-docker.yml@v3
+      - test
+    permissions:
+      contents: read
+      packages: write
+    uses: BjoernPetersen/actions-container/.github/workflows/build-dual-image-kaniko.yml@v5
     with:
       push-image: ${{ github.ref_name == github.event.repository.default_branch }}
 
+  post-build-container-image:
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'pull_request'
+    needs: build-container-image
+    steps:
+      - run: echo "All images built"
+
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    if: github.ref_name == github.event.repository.default_branch
     needs:
       - build-container-image
-    if: success() && github.ref_name == github.event.repository.default_branch
-    concurrency: production
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v4
-      - name: Substitute environment variables in values.yaml
-        env:
-          IMAGE_NAME: "ghcr.io/${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}"
-        run: "envsubst < values.yaml > values_sub.yaml && mv values_sub.yaml values.yaml"
-      - name: install helm chart
-        uses: BlindfoldedSurgery/github-action-helm@v0.3.0
         with:
-          subcommand: upgrade
-          release_name: imdb-resolver
-          ref: .
-          install: true
-          namespace: timhatdiehandandermaus
-          atomic: true
-          kubeconfig: ${{ secrets.KUBECONFIG_RAW }}
+          fetch-depth: 0
+      - run: git push origin main:release
 
   clean:
     concurrency: cleanup
     needs: [ deploy ]
-    uses: BlindfoldedSurgery/actions-container/.github/workflows/clean.yml@v3
+    permissions:
+      packages: write
+    uses: BjoernPetersen/actions-container/.github/workflows/clean.yml@v5

@@ -1,8 +1,6 @@
-from typing import Dict
-
 from fastapi.testclient import TestClient
 
-from main import app
+from bot.main import app
 
 client = TestClient(app)
 
@@ -17,13 +15,13 @@ def get_test_data():
                 "id": "9866072",
                 "title": "Holidate",
                 "year": 2020,
-            }
+            },
         }
     }
 
 
-def compare_results_by_url(imdb_id: str, actual: Dict) -> bool:
-    expected: Dict = get_test_data()[imdb_id]["data"]
+def compare_results_by_url(imdb_id: str, actual: dict) -> bool:
+    expected: dict = get_test_data()[imdb_id]["data"]
     comparable_keys = expected.keys() - IGNORE_FIELDS
 
     result = {}
@@ -38,7 +36,7 @@ def test_url():
         response = client.post(
             "/",
             headers={"Content-Type": "application/json", "Accept": "application/json"},
-            json={"imdbUrl": url}
+            json={"imdbUrl": url},
         )
 
         assert response.status_code == get_test_data()[url].get("code", 200)

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: imdb-resolver
+description: Deploy imdb-resolver (https://github.com/tim-hat-die-hand-an-der-maus/imdb-resolver)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
