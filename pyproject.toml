@@ -13,7 +13,7 @@ dependencies = [
     "cinemagoer ==2023.5.1",
     "fastapi ==0.115.6",
     "pydantic ==2.3.0",
-    "requests ==2.31.0",
+    "requests ==2.32.2",
     "uvicorn ==0.23.2",
 ]
 
