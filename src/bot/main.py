@@ -1,4 +1,5 @@
 import re
+from typing import Self
 
 from fastapi import FastAPI, HTTPException
 from imdb import Cinemagoer
@@ -44,7 +45,7 @@ class MovieResponse(BaseModel):
     coverUrl: str
 
     @classmethod
-    def from_imdb_movie(cls, movie: Movie):
+    def from_imdb_movie(cls, movie: Movie) -> Self:
         cover_url = movie.data["cover url"]
         cover_ratio = get_ratio_from_cover_url(cover_url)
         cover_url = remove_size_from_cover_url(cover_url)
@@ -68,7 +69,7 @@ def search(req: SearchRequest):
 
     return {
         "results": [
-            MovieResponse.from_imdb_movie(movie).dict()
+            MovieResponse.from_imdb_movie(movie).model_dump()
             for movie in imdb.search_movie(req.title)
         ]
     }
