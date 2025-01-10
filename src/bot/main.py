@@ -1,13 +1,31 @@
+import logging
+import os
 import re
 from typing import Self
 
+import sentry_sdk
 from fastapi import FastAPI, HTTPException
 from imdb import Cinemagoer
 from imdb.helpers import get_byURL
 from imdb.Movie import Movie
 from pydantic import BaseModel
 
+_logger = logging.getLogger(__name__)
+
 COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
+
+
+def _basic_setup() -> None:
+    logging.basicConfig()
+    logging.getLogger("cloudflare_dyndns").setLevel(logging.DEBUG)
+    dsn = os.getenv("SENTRY_DSN")
+    if dsn:
+        sentry_sdk.init(
+            dsn=dsn,
+            release=os.getenv("APP_VERSION", "dev"),
+        )
+    else:
+        _logger.warning("Sentry is disabled")
 
 
 def remove_size_from_cover_url(url: str) -> str:
@@ -60,6 +78,7 @@ class MovieResponse(BaseModel):
         )
 
 
+_basic_setup()
 app = FastAPI()
 
 
