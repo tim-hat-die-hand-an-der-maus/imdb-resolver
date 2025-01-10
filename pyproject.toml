@@ -12,7 +12,7 @@ classifiers = [
 dependencies = [
     "cinemagoer ==2023.5.1",
     "fastapi ==0.115.6",
-    "pydantic ==2.4.2",
+    "pydantic ==2.10.5",
     "requests ==2.32.3",
     "uvicorn ==0.34.0",
 ]
