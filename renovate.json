@@ -3,6 +3,5 @@
   "extends": [
     "github>tim-hat-die-hand-an-der-maus/renovate-config"
   ],
-  "enabled": true,
-  "automerge": false
+  "enabled": true
 }
