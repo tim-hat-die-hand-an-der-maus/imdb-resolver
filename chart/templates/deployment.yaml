@@ -24,6 +24,13 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ .Release.Name }}
       containers:
         - name: app
           image: {{ .Values.image.app }}:{{ .Values.appVersion }}
