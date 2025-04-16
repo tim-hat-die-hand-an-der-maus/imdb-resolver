@@ -17,7 +17,7 @@ COVER_URL_SIZE_REGEX = r"._V\d+_\w+\d+_\w+\d+,\d+,(\d+),(\d+)_"
 
 def _basic_setup() -> None:
     logging.basicConfig()
-    logging.getLogger("cloudflare_dyndns").setLevel(logging.DEBUG)
+    logging.getLogger(__package__).setLevel(logging.DEBUG)
     dsn = os.getenv("SENTRY_DSN")
     if dsn:
         sentry_sdk.init(
