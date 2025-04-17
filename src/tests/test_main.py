@@ -15,6 +15,7 @@ def get_test_data():
                 "id": "9866072",
                 "title": "Holidate",
                 "year": 2020,
+                "imdbUrl": "https://www.imdb.com/title/tt9866072",
             },
         }
     }
@@ -28,7 +29,7 @@ def compare_results_by_url(imdb_id: str, actual: dict) -> bool:
     for key in comparable_keys:
         result[key] = expected[key] == actual[key]
 
-    return all(e[1] for e in result.items())
+    return all(result.values())
 
 
 def test_url():

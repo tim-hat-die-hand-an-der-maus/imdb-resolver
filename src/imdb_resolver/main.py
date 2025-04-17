@@ -1,14 +1,14 @@
 import logging
 import os
 import re
-from typing import Self
+from typing import Annotated, Self
 
 import sentry_sdk
 from fastapi import FastAPI, HTTPException
 from imdb import Cinemagoer
 from imdb.helpers import get_byURL
 from imdb.Movie import Movie
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, HttpUrl
 
 _logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ class MovieResponse(BaseModel):
     year: int
     rating: str
     cover: CoverMetadataResponse
-    coverUrl: str
+    imdb_url: Annotated[HttpUrl, Field(serialization_alias="imdbUrl")]
 
     @classmethod
     def from_imdb_movie(cls, movie: Movie) -> Self | None:
@@ -77,7 +77,7 @@ class MovieResponse(BaseModel):
             year=movie.data.get("year"),
             rating=str(movie.data.get("rating")),
             cover=CoverMetadataResponse(url=cover_url, ratio=cover_ratio),
-            coverUrl=cover_url,
+            imdb_url=f"https://www.imdb.com/title/tt{movie.movieID}",  # type: ignore
         )
 
 
