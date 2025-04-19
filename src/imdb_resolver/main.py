@@ -108,6 +108,10 @@ def resolve_link(url: str) -> MovieResponse | None:
             imdb_id = match.group(1)
             movie = Cinemagoer().get_movie(imdb_id)
 
+    if kind := movie["kind"] not in ["movie", "tv movie"]:
+        _logger.warning("Ignoring movie with kind %s", kind)
+        return None
+
     if movie:
         return MovieResponse.from_imdb_movie(movie)
     else:
