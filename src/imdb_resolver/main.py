@@ -72,7 +72,7 @@ class MovieResponse(BaseModel):
         cover_url = remove_size_from_cover_url(cover_url)
 
         return cls(
-            id=movie.movieID,
+            id=f"tt{movie.movieID}",
             title=movie.data["title"],
             year=movie.data.get("year"),
             rating=str(movie.data.get("rating")),
