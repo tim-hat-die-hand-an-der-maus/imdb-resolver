@@ -3,5 +3,13 @@
   "extends": [
     "github>tim-hat-die-hand-an-der-maus/renovate-config"
   ],
-  "enabled": true
+  "enabled": true,
+  "packageRules": [
+    {
+      "matchDepNames": [
+        "python"
+      ],
+      "allowedVersions": "<3.12"
+    }
+  ]
 }
