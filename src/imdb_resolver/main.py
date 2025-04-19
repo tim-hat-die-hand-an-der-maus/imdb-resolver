@@ -36,7 +36,7 @@ def get_ratio_from_cover_url(url: str) -> float:
     if matches := re.findall(COVER_URL_SIZE_REGEX, url):
         width, height = matches[0]
 
-        return int(height) / int(width)
+        return int(width) / int(height)
 
     raise ValueError("Could not determine ratio of cover")
 
