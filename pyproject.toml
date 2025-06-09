@@ -13,7 +13,7 @@ dependencies = [
     "cinemagoer ==2023.5.1",
     "fastapi ==0.115.12",
     "pydantic ==2.11.5",
-    "requests ==2.32.3",
+    "requests ==2.32.4",
     "sentry-sdk [fastapi] ==2.29.*",
     "uvicorn ==0.34.3",
 ]
