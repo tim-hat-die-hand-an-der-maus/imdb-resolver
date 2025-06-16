@@ -5,6 +5,7 @@ from typing import Annotated, Self
 
 import sentry_sdk
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from imdb import Cinemagoer
 from imdb.helpers import get_byURL
 from imdb.Movie import Movie
@@ -83,6 +84,15 @@ class MovieResponse(BaseModel):
 
 _basic_setup()
 app = FastAPI()
+
+
+@app.get("/healthz")
+def healthz() -> JSONResponse:
+    return JSONResponse(
+        content=dict(
+            status="ok",
+        ),
+    )
 
 
 @app.post("/search")
