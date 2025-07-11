@@ -11,7 +11,7 @@ classifiers = [
 
 dependencies = [
     "cinemagoer ==2023.5.1",
-    "fastapi ==0.116.0",
+    "fastapi ==0.116.1",
     "pydantic ==2.11.7",
     "requests ==2.32.4",
     "sentry-sdk [fastapi] ==2.32.*",
