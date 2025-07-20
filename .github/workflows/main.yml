@@ -11,11 +11,3 @@ jobs:
       checks: write
       pull-requests: write
     uses: BlindfoldedSurgery/actions-meta/.github/workflows/required.yml@v1
-
-  clean:
-    concurrency: cleanup
-    permissions:
-      packages: write
-    uses: tim-hat-die-hand-an-der-maus/actions-container/.github/workflows/clean.yml@v7
-    with:
-      min-versions-to-keep: 0
